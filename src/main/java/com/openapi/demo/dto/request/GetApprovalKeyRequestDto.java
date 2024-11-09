@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetApprovalKeyRequestDto {
     //body 필드
-    String grant_type;
-    String appkey;
-    String secretkey;
+    private String grant_type = "client_credentials";
+    private String appkey;
+    private String secretkey;
 }

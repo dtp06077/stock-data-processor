@@ -30,7 +30,7 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
     @PostConstruct
     public void connectToWebSocket() {
         String approvalKey = approvalKeyManager.getApprovalKey();
-        String url = KisConstant.WS_BASE_URL+"/tryitout/H0STCNT0";
+        String url = KisConstant.WS_BASE_URL+KisConstant.GET_REAL_TIME_EXE_PRICE_PATH;
 
         messageQueue = new LinkedBlockingDeque<>();
 

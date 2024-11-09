@@ -37,13 +37,12 @@ public class ApprovalKeyManager {
 
         GetApprovalKeyRequestDto requestDto = new GetApprovalKeyRequestDto();
 
-        requestDto.setGrant_type("client_credentials");
         requestDto.setAppkey(kisSecret.getAPPKEY());
         requestDto.setSecretkey(kisSecret.getAPPSECRET());
 
         try {
             Mono<GetApprovalKeyResponseDto> mono = webClient.post()
-                    .uri(KisConstant.APPROVAL_PATH)
+                    .uri(KisConstant.GET_APPROVAL_PATH)
                     .header("content-type", "application/json")
                     .bodyValue(requestDto)
                     .retrieve()
