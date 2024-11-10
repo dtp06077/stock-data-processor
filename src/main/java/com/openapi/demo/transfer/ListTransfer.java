@@ -27,20 +27,24 @@ public class ListTransfer {
 
     private static void csvExtractor() {
         itemCodeList = new ArrayList<>();
-        String csvFilePath = "src/main/resources/data.csv";
+        String csvFilePath = "src/main/resources/data/stock_data.csv";
 
         try (Reader in = new InputStreamReader(Files.newInputStream(Paths.get(csvFilePath)), StandardCharsets.UTF_8)) {
-            Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+
+            int count = 0;
 
             for (CSVRecord record : records) {
+
+                if(count==35) break;
+
                 String value = record.get(1);
-                if (value.length() == 6) {
-                    itemCodeList.add(value);
-                }
+                itemCodeList.add(value);
+                count++;
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("csv error : " + e.getMessage());
         }
     }
 }

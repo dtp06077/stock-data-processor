@@ -3,6 +3,7 @@ package com.openapi.demo.websocket.handler;
 import com.openapi.demo.common.KisConstant;
 import com.openapi.demo.transfer.JsonTransfer;
 import com.openapi.demo.security.token.ApprovalKeyManager;
+import com.openapi.demo.transfer.ListTransfer;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 
+import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -39,7 +41,7 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
             @Override
             public void afterConnectionEstablished(WebSocketSession session) {
 
-                String[] itemCodeList = new String[]{"098120", "131100", "009520", "095570", "006840", "282330", "027410", "138930", "001465", "001460"};
+                List<String> itemCodeList = ListTransfer.getItemCodeList();
 
                 // 각 종목 코드에 대해 스레드에서 요청 전송
                 for (String itemCode : itemCodeList) {
@@ -89,6 +91,7 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
             public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
                 // 연결 종료 시 처리
                 System.out.println("WebSocket connection closed: " + status);
+                executorService.close();
             }
         };
 
