@@ -1,6 +1,7 @@
 package com.openapi.demo.websocket.handler;
 
 import com.openapi.demo.common.KisConstant;
+import com.openapi.demo.kafka.KafkaProducerService;
 import com.openapi.demo.transfer.JsonTransfer;
 import com.openapi.demo.security.token.ApprovalKeyManager;
 import com.openapi.demo.transfer.ListTransfer;
@@ -27,6 +28,9 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
     private final ApprovalKeyManager approvalKeyManager;
     private final WebSocketClient webSocketClient;
     private final ExecutorService executorService;
+    private final ListTransfer listTransfer;
+    private final KafkaProducerService kafkaProducerService;
+
     private BlockingDeque<String> messageQueue;
 
     @PostConstruct
@@ -41,22 +45,23 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
             @Override
             public void afterConnectionEstablished(WebSocketSession session) {
 
-                List<String> itemCodeList = ListTransfer.getItemCodeList();
+                List<String> itemCodeList = listTransfer.getItemCodeList();
 
-                // 각 종목 코드에 대해 스레드에서 요청 전송
                 for (String itemCode : itemCodeList) {
                     String subscribeMessage = JsonTransfer.getExePriceMessage(approvalKey, itemCode);
                     messageQueue.offer(subscribeMessage);
                 }
 
                 executorService.submit(() -> {
+
                     while (!messageQueue.isEmpty()) {
                         try {
-                            String message = messageQueue.take(); // 큐에서 메시지 가져오기
-                            session.sendMessage(new TextMessage(message)); // 메시지 전송
+                            String message = messageQueue.take();
+                            session.sendMessage(new TextMessage(message));
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            System.out.println(e.getMessage());
                         }
+
                     }
                 });
             }
@@ -64,27 +69,8 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
             @Override
             protected void handleTextMessage(WebSocketSession session, TextMessage message) {
 
-                System.out.println("Received message: " + message.getPayload());
-
-//                Properties props = new Properties();
-//                props.put("bootstrap.servers", "118.67.129.24:9092");
-//                props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-//                props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-//
-//                KafkaProducer<String, String> producer = new KafkaProducer<>(props);
-//
-//                ProducerRecord<String, String> record = new ProducerRecord<>("test", message.getPayload());
-//
-//
-//                producer.send(record, (metadata, exception) -> {
-//                    if (exception != null) {
-//
-//                        System.err.println("Error while producing message: " + exception.getMessage());
-//                    } else {
-//
-//                        System.out.printf("Message sent to topic %s with offset %d%n", metadata.topic(), metadata.offset());
-//                    }
-//                });
+                //System.out.println("Received message: " + message.getPayload());
+                kafkaProducerService.sendMessage("test", message.getPayload());
             }
 
             @Override

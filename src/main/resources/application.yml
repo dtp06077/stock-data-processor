@@ -6,3 +6,7 @@ server:
 kis:
   appkey: ${KIS_APPKEY}
   appsecret: ${KIS_APPSECRET}
+
+#카프카 브로커 주소
+kafka:
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}

@@ -16,8 +16,9 @@ public class ApprovalKeyManager {
 
     @Autowired
     private KisSecret kisSecret;
+    private String APPROVAL_KEY;
+
     private final WebClient webClient;
-    private static String APPROVAL_KEY;
 
     public ApprovalKeyManager(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl(KisConstant.REST_BASE_URL).build();
