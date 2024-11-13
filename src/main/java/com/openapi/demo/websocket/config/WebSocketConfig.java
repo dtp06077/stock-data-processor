@@ -21,6 +21,6 @@ public class WebSocketConfig {
 
     @Bean
     public ExecutorService executorService() {
-        return Executors.newFixedThreadPool(2000);
+        return Executors.newFixedThreadPool(100);
     }
 }

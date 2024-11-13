@@ -1,6 +1,7 @@
 package com.openapi.demo.websocket.handler;
 
 import com.openapi.demo.common.KisConstant;
+import com.openapi.demo.kafka.KafkaConsumerService;
 import com.openapi.demo.kafka.KafkaProducerService;
 import com.openapi.demo.transfer.JsonTransfer;
 import com.openapi.demo.security.token.ApprovalKeyManager;
@@ -29,7 +30,9 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
     private final WebSocketClient webSocketClient;
     private final ExecutorService executorService;
     private final ListTransfer listTransfer;
+
     private final KafkaProducerService kafkaProducerService;
+    private final KafkaConsumerService kafkaConsumerService;
 
     private BlockingDeque<String> messageQueue;
 
@@ -69,8 +72,9 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
             @Override
             protected void handleTextMessage(WebSocketSession session, TextMessage message) {
 
-                //System.out.println("Received message: " + message.getPayload());
-                kafkaProducerService.sendMessage("test", message.getPayload());
+                System.out.println("Received message: " + message.getPayload());
+//                kafkaProducerService.sendMessage("test", message.getPayload());
+//                kafkaConsumerService.startConsuming();
             }
 
             @Override
